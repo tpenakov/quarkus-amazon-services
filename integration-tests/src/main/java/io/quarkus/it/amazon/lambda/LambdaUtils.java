@@ -17,9 +17,6 @@ import software.amazon.awssdk.services.lambda.model.ListFunctionsResponse;
 import software.amazon.awssdk.services.lambda.model.Runtime;
 import software.amazon.awssdk.utils.StringUtils;
 
-/*
- * Created by triphon 21.11.23 г.
- */
 @ApplicationScoped
 public class LambdaUtils {
     private static final Logger LOG = Logger.getLogger(LambdaResource.class);

@@ -15,9 +15,6 @@ import org.jboss.logging.Logger;
 import software.amazon.awssdk.services.lambda.model.FunctionConfiguration;
 import software.amazon.awssdk.utils.StringUtils;
 
-/*
- * Created by triphon 21.11.23 г.
- */
 @Path("/lambda")
 public class LambdaResource {
     private static final Logger LOG = Logger.getLogger(LambdaResource.class);

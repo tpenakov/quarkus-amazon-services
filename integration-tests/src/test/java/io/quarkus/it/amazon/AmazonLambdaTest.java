@@ -2,11 +2,15 @@ package io.quarkus.it.amazon;
 
 import static org.hamcrest.Matchers.is;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Optional;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -19,12 +23,23 @@ public class AmazonLambdaTest {
 
     byte[] helloLambdaZipArchive;
 
-    @BeforeEach
+    @BeforeAll
     public void setup() throws IOException {
-        if (ArrayUtils.isEmpty(helloLambdaZipArchive)) {
-            helloLambdaZipArchive = IOUtils
-                    .toByteArray(Optional.ofNullable(getClass().getResourceAsStream("/functions/hello-lambda.zip-archive"))
-                            .orElseThrow());
+
+        // zip the index.js file
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                ZipOutputStream zos = new ZipOutputStream(baos)) {
+            String filename = "index.js";
+            ZipEntry entry = new ZipEntry(filename);
+            zos.putNextEntry(entry);
+            zos.write(IOUtils
+                    .toByteArray(Optional.ofNullable(getClass().getResourceAsStream("/lambda/index.js"))
+                            .orElseThrow()));
+            zos.closeEntry();
+            zos.close();
+
+            // this is the zip file as byte[]
+            helloLambdaZipArchive = baos.toByteArray();
         }
     }
 
@@ -48,5 +63,4 @@ public class AmazonLambdaTest {
                 .post("/test/lambda/blocking").then()
                 .body(is(LambdaResource.OK));
     }
-
 }
